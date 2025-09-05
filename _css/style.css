@@ -2,9 +2,11 @@
     --fonte: "Press Start 2P", system-ui;
     --velocidade: 2s
 }
-body{
+
+body {
     background-color: rgb(150, 84, 8);
 }
+
 * {
     margin: 0;
     padding: 0;
@@ -103,6 +105,30 @@ body{
     display: none;
 }
 
+.game-over-screen {
+    /* Posicionamento e Tamanho */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Centralização do Conteúdo (IMPORTANTE) */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* Estilo Visual */
+    background-color: rgba(0, 0, 0, 0.75);
+    /* Fundo preto semi-transparente */
+    color: white;
+    font-family: var(--fonte);
+    z-index: 20;
+
+    display: none;
+}
+
 .game-over-screen h2 {
     font-size: 3rem;
     margin-bottom: 20px;
@@ -116,17 +142,66 @@ body{
     margin-bottom: 30px;
 }
 
-#restart-button {
+.tela-jogar-denovo {
+    /* Posicionamento e Tamanho */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Centralização do Conteúdo (IMPORTANTE) */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* Estilo Visual */
+    background-color: rgba(0, 0, 0, 0.75);
+    /* Fundo preto semi-transparente */
+    color: white;
+    font-family: var(--fonte);
+    z-index: 20;
+
+    display: none;
+}
+
+.tela-jogar-denovo h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #F8333C;
+    /* Um vermelho para destacar */
+    text-shadow: 3px 3px 0px black;
+}
+
+.tela-jogar-denovo p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.tela-jogar-denovo button {
     padding: 15px 30px;
     font-size: 1rem;
     color: white;
-    background-color: #44AF69;
     /* Um verde para o botão */
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-family: var(--game-font);
     box-shadow: 0 4px #2a6f43;
+    margin-right: 5px;
+    transition: all 0.1s ease-in-out;
+}
+
+#restart-button {
+    padding: 15px 30px;
+    font-size: 1rem;
+    color: white;
+    /* Um verde para o botão */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: var(--game-font);
     transition: all 0.1s ease-in-out;
 }
 
@@ -206,6 +281,17 @@ body{
     flex-direction: row;
 }
 
+#Continuar-Reniciar {
+    font-size: 1.2rem;
+    margin-top: 25px;
+    background-color: #333;
+    color: white;
+    font-family: var(--fonte);
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
 
 .personagemEscolha {
     width: 125px;
@@ -253,6 +339,13 @@ body{
     background-color: #0056b3;
     /* Cor mais escura ao passar o mouse */
 }
+
+
+
+
+
+
+/* KeyFrames */
 
 @keyframes pipe-animation {
     from {

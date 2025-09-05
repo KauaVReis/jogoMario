@@ -4,6 +4,7 @@ const pipe = document.querySelector(".pipe");
 const scoreElement = document.querySelector('.score');
 const bullet = document.querySelector('.bullet');
 const gameOverScreen = document.querySelector('.game-over-screen');
+const jogarDenovoScreen = document.querySelector('.tela-jogar-denovo');
 const finalScoreElement = document.querySelector('#final-score');
 const restartButton = document.querySelector('#restart-button');
 const gameBoard = document.querySelector('.game-board');
@@ -16,9 +17,8 @@ const startButton = document.querySelector('#start-button');
 var musicaMario = new Audio('_media/trilhasonoramario.mp3');
 
 const jumpSound = new Audio('./_media/_sons/jump.mp3');
-let jaExecutou1 = false;
-let jaExecutou2 = false;
-let jaExecutou3 = false;
+let pausa = false;
+
 
 const root = document.documentElement;
 var velocidade = getComputedStyle(root).getPropertyValue('--velocidade');
@@ -116,7 +116,9 @@ function startGame() {
 
     scoreInterval = setInterval(() => {
 
-        score++;
+        if (!pausa) {
+            score++;
+        }
         scoreElement.textContent = score;
         if (score % 100 == 0) {
             gameBoard.style.background = "linear-gradient(#0a0a40, #000000)";
@@ -152,37 +154,30 @@ function startGame() {
         const marioPosition = +window.getComputedStyle(mario).bottom.replace('px', '');
 
         if ((pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) || (bulletPosition <= 120 && bulletPosition > 0 && marioPosition < 80)) {
+            vida--
+            pausa = true;
+            jogarDenovoScreen.style.display = 'flex';
+            pipe.style.animationPlayState = 'paused';
+            mario.style.animation = "paused";
+            mario.src = './_imagens/game-over.png';
+            mario.style.width = '75px';
+            mario.style.marginLeft = '50px';
 
-            if (!jaExecutou1) {
-                vida--
-                jaExecutou1 = true; // Mude a flag para true para não executar mais
-            }
 
-            // else if (!jaExecutou2) {
-            //     vida--
-            //     jaExecutou2 = true; // Mude a flag para true para não executar mais
-            // } else if (!jaExecutou3) {
-            //     vida--
-            //     jaExecutou3 = true; // Mude a flag para true para não executar mais
-            // }
-            console.log(vida)
-            if (vida == 5) {
+            if (vida == 3) {
 
                 // Para o jogo
                 pipe.style.animation = "none";
                 pipe.style.left = `${pipePosition}px`;
                 mario.style.animation = "none";
                 mario.style.bottom = `${marioPosition}px`;
-                mario.src = './_imagens/game-over.png';
-                mario.style.width = '75px';
-                mario.style.marginLeft = '50px';
+
+
 
                 clearInterval(loop);
-                clearInterval(scoreInterval);
-
+                clearInterval(scoreInterval)
                 // Mostra tela de Game Over e salva
                 finalScoreElement.textContent = score;
-                gameOverScreen.style.display = 'flex';
                 musicaMario.pause();
                 salvarPontuacao(playerNick, score);
             }
@@ -213,6 +208,12 @@ startButton.addEventListener('click', () => {
     }
 });
 
+// Listener para o botão de morte até reniciar
+startButton.addEventListener('click', () => {
+    const nick = nicknameInput.value.trim();
+
+});
+
 function escolhaPersonagem(personagem) {
     switch (personagem) {
         case "sonic":
@@ -224,4 +225,15 @@ function escolhaPersonagem(personagem) {
 
             break;
     }
+}
+
+function continuarReniciar(escolha) {
+    if (escolha == 'continuar' && vida != 0) {
+        vida--
+        jogarDenovoScreen.style.display = 'none';
+        pausa == true
+        console.log(pausa)
+
+    }
+
 }

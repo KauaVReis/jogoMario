@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do mario</title>
+    <link rel="stylesheet" href="_css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="game-board">
+        <div class="tela-Inicial">
+            <img src="_imagens/logoSenai.png" alt="" width="350px">
+            <h1>Super Jogo do Mario</h1>
+            <label for="nickname">Digite seu Nick:</label>
+            <input type="text" id="nickname" placeholder="Seu Nick Aqui" maxlength="15">
+            <button id="start-button">Iniciar Jogo</button>
+            <div id="escolha-Personagem">
+                <div id="divPersonagem" value="marioPersonagem" onclick="escolhaPersonagem('mario')">
+                    <img src="_media/mario.gif" alt="" class="personagemEscolha">
+                    <p>Mario</p>
+                </div>
+                <div id="divPersonagem" value="sonic" onclick="escolhaPersonagem('sonic', this.values)">
+                    <img src="_media/sonic.gif" alt="" class="personagemEscolha">
+                    <p>Sonic</p>
+                </div>
+            </div>
+        </div>
+        <img src="./_imagens/pipe.png" class="pipe">
+        <img src="./_imagens/bullet.png" width="100px" class="bullet">
+        <img src="./_media/mario.gif" class="mario">
+        <img src="./_imagens/clouds.png" class="clouds">
+        <div class="score">0</div>
+
+        <div class="game-over-screen" style="display: none;">
+            <h2>Game Over</h2>
+            <p>Sua pontuação foi: <span id="final-score">0</span></p>
+            <button id="restart-button" onclick="window.location.reload()">Jogar Novamente</button>
+        </div>
+    </div>
+    <div class="rank-button-container">
+        <a href="./_php/rank.php" class="rank-button">Ver Rank</a>
+    </div>
+</body>
+<script src="_javascript/script.js" defer></script>
+
+</html>

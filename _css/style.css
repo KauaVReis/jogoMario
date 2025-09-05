@@ -1,0 +1,303 @@
+:root {
+    --fonte: "Press Start 2P", system-ui;
+    --velocidade: 2s
+}
+body{
+    background-color: rgb(150, 84, 8);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.press-start-2p-regular {
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+.game-board {
+    width: 100%;
+    height: 90vh;
+    border-bottom: 15px solid rgb(35, 160, 35);
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(#87ceeb, #e0f6ff);
+    /* transition: background-color 10s ease-in-out; */
+    /* Transição suave de 1 segundo */
+}
+
+.pipe {
+    position: absolute;
+    bottom: 0;
+    width: 80px;
+    animation: pipe-animation var(--velocidade) infinite linear;
+    animation-play-state: paused;
+}
+
+.bullet {
+    position: absolute;
+    bottom: 0;
+    width: 80px;
+    animation: bullet-animation 0.75s infinite linear;
+    animation-play-state: paused;
+}
+
+.mario {
+    width: 150px;
+    position: absolute;
+    bottom: 0;
+    /* transform: scaleX(-1); */
+
+}
+
+.jump {
+    animation: jump-animation 500ms ease-in-out;
+}
+
+.clouds {
+    position: absolute;
+    width: 600px;
+    animation: clouds-animation 10s infinite linear;
+    z-index: 1;
+
+}
+
+.score {
+    font-family: "Press Start 2P", system-ui;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+/* No final do seu arquivo CSS */
+
+.game-over-screen {
+    /* Posicionamento e Tamanho */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Centralização do Conteúdo (IMPORTANTE) */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* Estilo Visual */
+    background-color: rgba(0, 0, 0, 0.75);
+    /* Fundo preto semi-transparente */
+    color: white;
+    font-family: var(--fonte);
+    z-index: 20;
+
+    display: none;
+}
+
+.game-over-screen h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #F8333C;
+    /* Um vermelho para destacar */
+    text-shadow: 3px 3px 0px black;
+}
+
+.game-over-screen p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+#restart-button {
+    padding: 15px 30px;
+    font-size: 1rem;
+    color: white;
+    background-color: #44AF69;
+    /* Um verde para o botão */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: var(--game-font);
+    box-shadow: 0 4px #2a6f43;
+    transition: all 0.1s ease-in-out;
+}
+
+#restart-button:hover {
+    background-color: #3e9e5f;
+}
+
+#restart-button:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+
+/* Estilo da tela de início (parecido com o game-over) */
+.tela-Inicial {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    /* Começa visível! */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    font-family: var(--fonte);
+    z-index: 30;
+    text-align: center;
+}
+
+.tela-Inicial h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #f7d51d;
+    text-shadow: 3px 3px 0px #e15f00;
+}
+
+.tela-Inicial label {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.tela-Inicial input {
+    padding: 10px;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    border: 3px solid white;
+    background-color: #333;
+    color: white;
+    font-family: var(--fonte);
+    text-align: center;
+}
+
+#start-button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    color: white;
+    background-color: #28a745;
+    border: none;
+    cursor: pointer;
+    font-family: monospace;
+    border-radius: 5px;
+}
+
+#escolha-Personagem {
+    font-size: 1.2rem;
+    margin-top: 25px;
+    background-color: #333;
+    color: white;
+    font-family: var(--fonte);
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.personagemEscolha {
+    width: 125px;
+    height: 125px;
+    padding: 10px;
+    cursor: pointer;
+
+}
+
+#divPersonagem {
+    border: 3px solid white;
+    width: 100%;
+}
+
+
+
+.game-started .pipe {
+    animation-play-state: running;
+}
+
+.rank-button-container {
+    text-align: center;
+    margin: 30px 0;
+    /* Espaçamento acima e abaixo do botão */
+}
+
+.rank-button {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-family: var(--game-font);
+    /* Usa a mesma fonte do jogo */
+    color: white;
+    background-color: #007bff;
+    /* Um azul bonito */
+    border: 3px solid #0056b3;
+    border-radius: 8px;
+    text-decoration: none;
+    /* Remove o sublinhado do link */
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.2s ease;
+}
+
+.rank-button:hover {
+    background-color: #0056b3;
+    /* Cor mais escura ao passar o mouse */
+}
+
+@keyframes pipe-animation {
+    from {
+        right: -80px;
+    }
+
+    to {
+        right: 100%;
+    }
+}
+
+@keyframes bullet-animation {
+    from {
+        right: -80px;
+    }
+
+    to {
+        right: 100%;
+    }
+}
+
+@keyframes jump-animation {
+    0% {
+        bottom: 0;
+    }
+
+    40% {
+        bottom: 180px;
+    }
+
+    50% {
+        bottom: 180px;
+    }
+
+    100% {
+        bottom: 0;
+    }
+}
+
+@keyframes clouds-animation {
+    from {
+        right: -550px;
+    }
+
+    to {
+        right: 100%
+    }
+}

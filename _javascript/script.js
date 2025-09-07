@@ -2,76 +2,76 @@
 const mario = document.querySelector(".mario");
 const pipe = document.querySelector(".pipe");
 const scoreElement = document.querySelector('.score');
+const livesElement = document.querySelector('.lives');
 const bullet = document.querySelector('.bullet');
 const gameOverScreen = document.querySelector('.game-over-screen');
 const jogarDenovoScreen = document.querySelector('.tela-jogar-denovo');
 const finalScoreElement = document.querySelector('#final-score');
-const restartButton = document.querySelector('#restart-button');
 const gameBoard = document.querySelector('.game-board');
+const root = document.documentElement;
 
 //Tela inicial
 const telaInicial = document.querySelector('.tela-Inicial');
 const nicknameInput = document.querySelector('#nickname');
 const startButton = document.querySelector('#start-button');
 
-var musicaMario = new Audio('_media/trilhasonoramario.mp3');
-
+// Áudios
+var musicaMario = new Audio('./_media/_sons/trilhasonoramario.mp3');
 const jumpSound = new Audio('./_media/_sons/jump.mp3');
+const selectSound = new Audio('./_media/_sons/undertale-select.mp3');
+const coinSound = new Audio('./_media/_sons/coin-audio.mp3');
+
+// Variáveis de Estado do Jogo
 let pausa = false;
-
-
-const root = document.documentElement;
-var velocidade = getComputedStyle(root).getPropertyValue('--velocidade');
-var vida = 3;
-
+let estaInvuneravel = false;
+var vida = 20;
 let score = 0;
+let moedasColetadas = 0;
 let playerNick = '';
 let loop;
 let scoreInterval;
-let teste = "0"
+let personagemSelecionadoId = 'marioDiv';
 
-
+// Flags para controlar as mudanças de tema e dificuldade
+let tardeAtivada = false;
+let noiteAtivada = false;
+let infernoAtivado = false;
 
 const jump = () => {
-    if (!mario.classList.contains('jump')) { // Evita pulo duplo
+    if (!mario.classList.contains('jump')) {
         mario.classList.add('jump');
         jumpSound.play();
-        setTimeout(() => {
-            if (teste == '1') {
-                console.log("a")
-            }
-            mario.classList.remove('jump');
-        }, 500);
+        setTimeout(() => mario.classList.remove('jump'), 500);
     }
 }
 
 function perdeVida() {
-    return vida--;
+    vida--;
+    livesElement.textContent = `Vidas: ${vida}`;
 }
 
-
+function ativarInvunerabilidade() {
+    estaInvuneravel = true;
+    mario.classList.add('invuneravel');
+    setTimeout(() => {
+        estaInvuneravel = false;
+        mario.classList.remove('invuneravel');
+    }, 500);
+}
 
 function salvarPontuacao(nomeJogador, pontuacaoFinal) {
     const dados = { name: nomeJogador, score: pontuacaoFinal };
-
     fetch('./_php/salvar_pontuacao.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados),
     })
         .then(response => response.ok ? response.json() : Promise.reject(response))
-        .then(data => {
-            console.log('Resposta do PHP:', data.message);
-        })
-        .catch((error) => {
-            console.error('Ocorreu um erro na comunicação:', error);
-            // alert('Não foi possível salvar a pontuação. Tente novamente mais tarde.');
-            // Mesmo com erro, permite reiniciar
-            restartButton.onclick = () => window.location.reload();
-        });
+        .then(data => console.log('Resposta do PHP:', data.message))
+        .catch((error) => console.error('Ocorreu um erro na comunicação:', error));
 }
 
-//Codigos secretos
+// Códigos Secretos
 const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 const robertoCode = ['r', 'o', 'b', 'e', 'r', 't', 'o'];
 const palmeirasCode = ['p', 'a', 'l', 'm', 'e', 'i', 'r', 'a', 's'];
@@ -98,106 +98,129 @@ const checkKonami = checarCodigo(konamiCode, () => {
 });
 const checkRoberto = checarCodigo(robertoCode, () => {
     mario.src = './_imagens/image.png';
+    mario.style.transform = 'scaleX(1)';
 });
 const checkPalmeiras = checarCodigo(palmeirasCode, () => {
     mario.src = './_imagens/matheus.png';
+    mario.style.transform = 'scaleX(1)';
 });
 const checkSonic = checarCodigo(sonicCode, () => {
     mario.src = './_media/sonic.gif';
-    teste = "1"
+    mario.style.transform = 'scaleX(1)';
 });
-
-// Gerenciador de Estado do Jogo (Start / Game Over)
 
 function startGame() {
     telaInicial.style.display = 'none';
     pipe.style.animationPlayState = 'running';
-
+    root.style.setProperty('--velocidade', `2.0s`); // Garante velocidade inicial
 
     scoreInterval = setInterval(() => {
+        if (!pausa) score++;
+        scoreElement.textContent = `Score: ${score}`;
 
-        if (!pausa) {
-            score++;
+        // AUMENTO PROGRESSIVO DE VELOCIDADE
+        if (score % 1 === 0 && score > 0 && !infernoAtivado && !pausa) {
+            let velocidadeAtual = parseFloat(getComputedStyle(root).getPropertyValue('--velocidade'));
+            console.log(velocidadeAtual)
+            if (velocidadeAtual > 1.5) {
+                let novaVelocidade = Math.max(1.5, velocidadeAtual - 0.001);
+                root.style.setProperty('--velocidade', `${novaVelocidade.toFixed(3)}s`);
+            }
         }
-        scoreElement.textContent = score;
-        if (score % 100 == 0) {
-            gameBoard.style.background = "linear-gradient(#0a0a40, #000000)";
+
+        // MUDANÇAS DE TEMA POR PONTUAÇÃO
+        if (score >= 500 && !tardeAtivada) {
+            gameBoard.className = 'game-board theme-tarde';
+            tardeAtivada = true;
         }
-        if (score == 100) {
+        if (score >= 1000 && !noiteAtivada) {
+            gameBoard.className = 'game-board theme-noite';
             musicaMario.pause();
-            musicaMario = new Audio('_media/silkSong.mp3');
+            musicaMario = new Audio('./_media/_sons/silkSong.mp3');
             musicaMario.play();
-
+            noiteAtivada = true;
+        }
+        if (score >= 1500 && !infernoAtivado) {
+            gameBoard.className = 'game-board theme-infernal';
+            root.style.setProperty('--velocidade', '1.0s');
+            console.log("MODO INFERNAL ATIVADO! Velocidade: 1s");
+            infernoAtivado = true;
         }
 
-        // if (score % 10 == 0) {
-        //     var velocidade = getComputedStyle(root).getPropertyValue('--velocidade');
-        //     console.log(score % 10)
-        //     console.log(velocidade)
-        //     var novaVelocidade = (parseInt(velocidade) - 0.01)
-        //     console.log(novaVelocidade)
-        //     root.style.setProperty(('--velocidade'), novaVelocidade + "s")
-        // }
+        // LÓGICA DE BULLET
         if (score == 500) {
             bullet.style.animationPlayState = 'running';
         } else if (score > 483) {
             bullet.style.animationPlayState = 'paused';
             bullet.style.display = 'none';
+            novaMoeda
+        }
+
+        // LÓGICA DE MOEDAS
+        if (score > 0 && score % 50 === 0) {
+            let alturaAleatoria = Math.random() * (200 - 80) + 80;
+            criarMoeda(alturaAleatoria);
         }
     }, 100);
 
-
     loop = setInterval(() => {
+        if (pausa || estaInvuneravel) return;
         musicaMario.play();
+
+        const marioPositionBottom = +window.getComputedStyle(mario).bottom.replace('px', '');
+        const marioPositionLeft = mario.offsetLeft;
+
+        document.querySelectorAll('.coin').forEach((moeda) => {
+            const moedaPositionLeft = moeda.offsetLeft;
+            const moedaPositionBottom = +window.getComputedStyle(moeda).bottom.replace('px', '');
+
+            if (
+                marioPositionLeft < moedaPositionLeft + 40 &&
+                marioPositionLeft + 120 > moedaPositionLeft &&
+                marioPositionBottom < moedaPositionBottom + 40 &&
+                marioPositionBottom + 120 > moedaPositionBottom
+            ) {
+                moeda.remove();
+                coinSound.play();
+                score += 10;
+                moedasColetadas++;
+
+                if (moedasColetadas % 25 === 0 && moedasColetadas > 0) {
+                    vida++;
+                    livesElement.textContent = `Vidas: ${vida}`;
+                }
+            }
+        });
+
+        // Lógica de colisão com obstáculos
         const pipePosition = pipe.offsetLeft;
         const bulletPosition = bullet.offsetLeft;
-        const marioPosition = +window.getComputedStyle(mario).bottom.replace('px', '');
 
-        if ((pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) || (bulletPosition <= 120 && bulletPosition > 0 && marioPosition < 80)) {
-            vida--
+        if ((pipePosition <= 120 && pipePosition > 0 && marioPositionBottom < 80) ||
+            (bullet.style.display === 'block' && bulletPosition <= 120 && bulletPosition > 0 && marioPositionBottom < 80)) {
+            perdeVida();
             pausa = true;
-            jogarDenovoScreen.style.display = 'flex';
             pipe.style.animationPlayState = 'paused';
-            mario.style.animation = "paused";
-            mario.src = './_imagens/game-over.png';
-            mario.style.width = '75px';
-            mario.style.marginLeft = '50px';
+            bullet.style.animationPlayState = 'paused';
+            
 
-
-            if (vida == 3) {
-
-                // Para o jogo
-                pipe.style.animation = "none";
-                pipe.style.left = `${pipePosition}px`;
-                mario.style.animation = "none";
-                mario.style.bottom = `${marioPosition}px`;
-
-
-
-                clearInterval(loop);
-                clearInterval(scoreInterval)
-                // Mostra tela de Game Over e salva
-                finalScoreElement.textContent = score;
-                musicaMario.pause();
-                salvarPontuacao(playerNick, score);
+            if (vida > 0) {
+                jogarDenovoScreen.style.display = 'flex';
+            } else {
+                morrer(pipePosition, bulletPosition, marioPositionBottom);
             }
         }
     }, 10);
 }
 
-// Event Listeners (Pontos de Entrada)
-
-// Gerenciador de Teclado ÚNICO
 document.addEventListener('keydown', (event) => {
     jump();
-    // Verificadores de código
     checkKonami(event.key);
     checkRoberto(event.key);
     checkPalmeiras(event.key);
     checkSonic(event.key);
 });
 
-// Listener para o botão de início
 startButton.addEventListener('click', () => {
     const nick = nicknameInput.value.trim();
     if (nick) {
@@ -208,32 +231,80 @@ startButton.addEventListener('click', () => {
     }
 });
 
-// Listener para o botão de morte até reniciar
-startButton.addEventListener('click', () => {
-    const nick = nicknameInput.value.trim();
-
-});
-
 function escolhaPersonagem(personagem) {
-    switch (personagem) {
-        case "sonic":
-            mario.src = './_media/sonic.gif';
-            break;
+    selectSound.currentTime = 0;
+    selectSound.play();
 
-        default:
-            mario.src = './_media/mario.gif';
-
-            break;
+    if (personagemSelecionadoId) {
+        document.getElementById(personagemSelecionadoId).classList.remove('selecionado');
     }
+
+    const novaSelecaoDiv = document.getElementById(`${personagem}Div`);
+    if (novaSelecaoDiv) {
+        novaSelecaoDiv.classList.add('selecionado');
+        personagemSelecionadoId = `${personagem}Div`;
+    }
+
+    const caminhos = {
+        mario: './_media/mario.gif', sonic: './_media/sonic.gif', megaman: './_media/yd6sCid.gif',
+        link: './_media/link.gif', goku: './_media/goku.gif', jotaro: './_media/jotaroA.gif',
+        hollow: './_media/hollow.gif', hornet: './_media/hornet.gif'
+    };
+    mario.src = caminhos[personagem] || caminhos.mario;
+    mario.style.transform = (personagem === 'hollow' || personagem === 'hornet') ? 'scaleX(-1)' : 'scaleX(1)';
 }
 
 function continuarReniciar(escolha) {
-    if (escolha == 'continuar' && vida != 0) {
-        vida--
+    if (escolha === 'continuar') {
         jogarDenovoScreen.style.display = 'none';
-        pausa == true
-        console.log(pausa)
-
+        pipe.style.right = '-80px';
+        pipe.style.left = '';
+        pipe.style.animationPlayState = 'running';
+        bullet.style.right = '-80px';
+        bullet.style.left = '';
+        bullet.style.animationPlayState = 'running';
+        pausa = false;
+        ativarInvunerabilidade();
+    } else if (escolha === 'Reniciar') {
+        window.location.reload();
     }
-
 }
+
+function morrer(pipePosition, bulletPosition, marioPosition) {
+    pipe.style.animation = "none";
+    pipe.style.left = `${pipePosition}px`;
+    bullet.style.animation = "none";
+    bullet.style.left = `${bulletPosition}px`;
+    mario.style.animation = "none";
+    mario.style.bottom = `${marioPosition}px`;
+    mario.src = './_imagens/game-over.png';
+    mario.style.width = '75px';
+    mario.style.marginLeft = '50px';
+    gameOverScreen.style.display = 'flex';
+    clearInterval(loop);
+    clearInterval(scoreInterval);
+    finalScoreElement.textContent = score;
+    musicaMario.pause();
+    salvarPontuacao(playerNick, score);
+}
+
+function criarMoeda(bottom) {
+    const novaMoeda = document.createElement('img');
+    novaMoeda.src = './_imagens/coin.png';
+    novaMoeda.classList.add('coin');
+    novaMoeda.style.bottom = `${bottom}px`;
+    gameBoard.appendChild(novaMoeda);
+
+    setTimeout(() => {
+        if (novaMoeda) {
+            novaMoeda.remove();
+        }
+    }, 4000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const marioDiv = document.getElementById('marioDiv');
+    if (marioDiv) {
+        marioDiv.classList.add('selecionado');
+    }
+});

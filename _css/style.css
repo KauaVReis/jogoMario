@@ -42,10 +42,14 @@ body {
 
 .bullet {
     position: absolute;
-    bottom: 0;
+    bottom: 20px;
+    /* Ajuste para o bullet não ficar no chão */
     width: 80px;
-    animation: bullet-animation 0.75s infinite linear;
+    animation: bullet-animation 1.5s infinite linear;
+    /* Velocidade ajustada */
     animation-play-state: paused;
+    display: none;
+    /* Começa escondido */
 }
 
 .mario {
@@ -68,7 +72,7 @@ body {
 
 }
 
-.score {
+.score-container {
     font-family: "Press Start 2P", system-ui;
     position: absolute;
     top: 20px;
@@ -77,6 +81,8 @@ body {
     font-size: 1.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     z-index: 10;
+    display: flex;
+    gap: 20px;
 }
 
 /* No final do seu arquivo CSS */
@@ -89,31 +95,6 @@ body {
     width: 100%;
     height: 100%;
 
-    /* Centralização do Conteúdo (IMPORTANTE) */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    /* Estilo Visual */
-    background-color: rgba(0, 0, 0, 0.75);
-    /* Fundo preto semi-transparente */
-    color: white;
-    font-family: var(--fonte);
-    z-index: 20;
-
-    display: none;
-}
-
-.game-over-screen {
-    /* Posicionamento e Tamanho */
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    /* Centralização do Conteúdo (IMPORTANTE) */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -197,7 +178,7 @@ body {
     padding: 15px 30px;
     font-size: 1rem;
     color: white;
-    /* Um verde para o botão */
+    background-color: #44AF69;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -340,10 +321,80 @@ body {
     /* Cor mais escura ao passar o mouse */
 }
 
+.mario.invuneravel {
+    animation: piscar 0.2s infinite alternate;
+    /* Pisca a cada 0.2 segundos */
+}
 
+.divPersonagem.selecionado {
+    border: 3px solid #4CAF50;
+    box-shadow: 0 0 15px #4CAF50;
+}
 
+.divPersonagem {
+    border: 3px solid white;
+    /* Borda padrão */
+    width: 100%;
+}
 
+.coin {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    z-index: 15;
+    animation: pipe-animation var(--velocidade) infinite linear;
+}
 
+/* TEMA TARDE (Ajustado) */
+.theme-tarde {
+    /* Tons de laranja e roxo para um pôr do sol mais vibrante */
+    background: linear-gradient(#ffdd66, #ff8c00, #a033a0);
+    position: relative;
+    /* Necessário para posicionar estrelas ou outros elementos */
+}
+
+/* Opcional: Estrelas ou brilhos para a tarde/noite */
+.theme-tarde::before,
+.theme-noite::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+    background-size: 50px 50px;
+    /* Tamanho das "estrelas" */
+    opacity: 0.5;
+    /* Suaviza o efeito */
+    z-index: 0;
+}
+
+/* Você pode adicionar um brilho no sol/horizonte */
+.theme-tarde::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    /* Altura do brilho */
+    background: radial-gradient(ellipse at bottom, rgba(255, 200, 0, 0.3) 0%, transparent 70%);
+    z-index: 1;
+}
+
+/* Ajustar as nuvens para o tema tarde */
+.theme-tarde .clouds {
+    filter: brightness(0.8) hue-rotate(-10deg);
+    /* Nuvens mais quentes */
+}
+
+/* Garanta que as nuvens sejam visíveis nos temas escuros */
+.theme-noite .clouds,
+.theme-infernal .clouds {
+    filter: brightness(0.5);
+    /* Escurece as nuvens para a noite */
+}
 
 /* KeyFrames */
 
@@ -392,5 +443,16 @@ body {
 
     to {
         right: 100%
+    }
+}
+
+@keyframes piscar {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0.3;
+        /* Quase transparente */
     }
 }

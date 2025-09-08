@@ -3,6 +3,19 @@
     --velocidade: 2s
 }
 
+.lives1 {
+    width: 30px;
+    height: 30px;
+}
+.lives2 {
+    width: 30px;
+    height: 30px;
+}
+.lives3 {
+    width: 30px;
+    height: 30px;
+}
+
 body {
     background-color: rgb(150, 84, 8);
 }

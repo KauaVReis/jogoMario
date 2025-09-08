@@ -2,7 +2,9 @@
 const mario = document.querySelector(".mario");
 const pipe = document.querySelector(".pipe");
 const scoreElement = document.querySelector('.score');
-const livesElement = document.querySelector('.lives');
+const lives1Element = document.querySelector('.lives1');
+const lives2Element = document.querySelector('.lives2');
+const lives3Element = document.querySelector('.lives3');
 const bullet = document.querySelector('.bullet');
 const gameOverScreen = document.querySelector('.game-over-screen');
 const jogarDenovoScreen = document.querySelector('.tela-jogar-denovo');
@@ -49,7 +51,17 @@ const jump = () => {
 
 function perdeVida() {
     vida--;
-    livesElement.textContent = `Vidas: ${vida}`;
+    lives1Element.textContent = `Vidas: ${vida}`;
+    if(vida == 2){
+        lives1Element.style.display = "none";
+    }
+    if(vida == 1){
+        lives2Element.style.display = "none";
+        
+    }
+    if(vida == 0){
+        lives3Element.style.display = "none";
+    }
 }
 
 function ativarInvunerabilidade() {

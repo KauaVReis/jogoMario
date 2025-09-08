@@ -345,15 +345,20 @@ body {
     animation: pipe-animation var(--velocidade) infinite linear;
 }
 
-/* TEMA TARDE (Ajustado) */
 .theme-tarde {
-    /* Tons de laranja e roxo para um pôr do sol mais vibrante */
     background: linear-gradient(#ffdd66, #ff8c00, #a033a0);
     position: relative;
-    /* Necessário para posicionar estrelas ou outros elementos */
 }
 
-/* Opcional: Estrelas ou brilhos para a tarde/noite */
+.theme-noite {
+    background: linear-gradient(#0a0a40, #000000);
+    position: relative;
+}
+.theme-infernal{
+    background: linear-gradient(#770404, #fc0303, #e95906, #e95906c7);
+
+}
+
 .theme-tarde::before,
 .theme-noite::before {
     content: '';
@@ -364,13 +369,10 @@ body {
     height: 100%;
     background-image: radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
     background-size: 50px 50px;
-    /* Tamanho das "estrelas" */
     opacity: 0.5;
-    /* Suaviza o efeito */
     z-index: 0;
 }
 
-/* Você pode adicionar um brilho no sol/horizonte */
 .theme-tarde::after {
     content: '';
     position: absolute;
@@ -383,17 +385,13 @@ body {
     z-index: 1;
 }
 
-/* Ajustar as nuvens para o tema tarde */
 .theme-tarde .clouds {
     filter: brightness(0.8) hue-rotate(-10deg);
-    /* Nuvens mais quentes */
 }
 
-/* Garanta que as nuvens sejam visíveis nos temas escuros */
 .theme-noite .clouds,
 .theme-infernal .clouds {
     filter: brightness(0.5);
-    /* Escurece as nuvens para a noite */
 }
 
 /* KeyFrames */

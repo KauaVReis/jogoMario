@@ -9,7 +9,7 @@ const jogarDenovoScreen = document.querySelector('.tela-jogar-denovo');
 const finalScoreElement = document.querySelector('#final-score');
 const gameBoard = document.querySelector('.game-board');
 const root = document.documentElement;
-
+const clouds = document.querySelector('.clouds')
 //Tela inicial
 const telaInicial = document.querySelector('.tela-Inicial');
 const nicknameInput = document.querySelector('#nickname');
@@ -21,10 +21,11 @@ const jumpSound = new Audio('./_media/_sons/jump.mp3');
 const selectSound = new Audio('./_media/_sons/undertale-select.mp3');
 const coinSound = new Audio('./_media/_sons/coin-audio.mp3');
 
+var localGameOver = './_imagens/morte/game-over-mario.png';
 // Variáveis de Estado do Jogo
 let pausa = false;
 let estaInvuneravel = false;
-var vida = 20;
+var vida = 3;
 let score = 0;
 let moedasColetadas = 0;
 let playerNick = '';
@@ -36,6 +37,7 @@ let personagemSelecionadoId = 'marioDiv';
 let tardeAtivada = false;
 let noiteAtivada = false;
 let infernoAtivado = false;
+let evangelion = false;
 
 const jump = () => {
     if (!mario.classList.contains('jump')) {
@@ -130,7 +132,10 @@ function startGame() {
 
         // MUDANÇAS DE TEMA POR PONTUAÇÃO
         if (score >= 500 && !tardeAtivada) {
-            gameBoard.className = 'game-board theme-tarde';
+            gameBoard.className = 'game-board theme-tarde'; 0
+            musicaMario.pause();
+            musicaMario = new Audio('./_media/_sons/HoraDeAventura.mp3');
+            musicaMario.play();
             tardeAtivada = true;
         }
         if (score >= 1000 && !noiteAtivada) {
@@ -142,10 +147,16 @@ function startGame() {
         }
         if (score >= 1500 && !infernoAtivado) {
             gameBoard.className = 'game-board theme-infernal';
+            gameBoard.style.borderBottom = "15px solid rgb(247, 111, 0)"
             root.style.setProperty('--velocidade', '1.0s');
             console.log("MODO INFERNAL ATIVADO! Velocidade: 1s");
+            clouds.src = ('./_media/minecraft-ghast.gif');
+            musicaMario.pause();
+            musicaMario = new Audio('./_media/_sons/DoomEternal.mp3');
+            musicaMario.play();
             infernoAtivado = true;
         }
+
 
         // LÓGICA DE BULLET
         if (score == 500) {
@@ -157,7 +168,7 @@ function startGame() {
         }
 
         // LÓGICA DE MOEDAS
-        if (score > 0 && score % 50 === 0) {
+        if (score > 0 && score % 50 == 0) {
             let alturaAleatoria = Math.random() * (200 - 80) + 80;
             criarMoeda(alturaAleatoria);
         }
@@ -202,7 +213,7 @@ function startGame() {
             pausa = true;
             pipe.style.animationPlayState = 'paused';
             bullet.style.animationPlayState = 'paused';
-            
+
 
             if (vida > 0) {
                 jogarDenovoScreen.style.display = 'flex';
@@ -250,6 +261,12 @@ function escolhaPersonagem(personagem) {
         link: './_media/link.gif', goku: './_media/goku.gif', jotaro: './_media/jotaroA.gif',
         hollow: './_media/hollow.gif', hornet: './_media/hornet.gif'
     };
+
+    if (personagem == "jotaro") {
+        localGameOver = `./_imagens/morte/game-over-${personagem}.gif`;
+    } else {
+        localGameOver = `./_imagens/morte/game-over-${personagem}.png`;
+    }
     mario.src = caminhos[personagem] || caminhos.mario;
     mario.style.transform = (personagem === 'hollow' || personagem === 'hornet') ? 'scaleX(-1)' : 'scaleX(1)';
 }
@@ -277,7 +294,7 @@ function morrer(pipePosition, bulletPosition, marioPosition) {
     bullet.style.left = `${bulletPosition}px`;
     mario.style.animation = "none";
     mario.style.bottom = `${marioPosition}px`;
-    mario.src = './_imagens/game-over.png';
+    mario.src = localGameOver;
     mario.style.width = '75px';
     mario.style.marginLeft = '50px';
     gameOverScreen.style.display = 'flex';

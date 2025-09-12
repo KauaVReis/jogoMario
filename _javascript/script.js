@@ -71,7 +71,7 @@ function ativarInvunerabilidade() {
     setTimeout(() => {
         estaInvuneravel = false;
         mario.classList.remove('invuneravel');
-    }, 50000);
+    }, 500);
 }
 
 function salvarPontuacao(nomeJogador, pontuacaoFinal) {
@@ -162,7 +162,7 @@ function startGame() {
             musicaMario.play();
             tardeAtivada = true;
         }
-        if (score >= 1000 && !noiteAtivada) {
+        if (score >= 10 && !noiteAtivada) {
             starLayer.classList.replace("star-layer-tarde", "star-layer");
             starLayer.style.display = 'block';
             starLayer.style.animation = 'brilha-estrela-animation 5s infinite linear';
@@ -172,7 +172,7 @@ function startGame() {
             musicaMario.play();
             noiteAtivada = true;
         }
-        if (score >= 10 && !infernoAtivado) {
+        if (score >= 1500 && !infernoAtivado) {
             gameBoard.className = 'game-board theme-infernal';
             root.style.setProperty('--velocidade', '1.0s');
             clouds.src = './_media/minecraft-ghast.gif';
@@ -228,7 +228,7 @@ function startGame() {
                 moedasColetadas++;
 
                 // Ganha vida a cada 25 moedas
-                if (moedasColetadas % 25 === 0 && moedasColetadas > 0) {
+                if (moedasColetadas % 10 === 0 && moedasColetadas > 0) {
                     vida++;
                     atualizarVidas(); // Redesenha as vidas na tela
                 }

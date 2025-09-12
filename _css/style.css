@@ -41,6 +41,7 @@ body {
     width: 80px;
     animation: pipe-animation var(--velocidade) infinite linear;
     animation-play-state: paused;
+    z-index: 1;
 }
 
 .bullet {
@@ -59,6 +60,7 @@ body {
     width: 150px;
     position: absolute;
     bottom: 0;
+    z-index: 1;
     /* transform: scaleX(-1); */
 
 }
@@ -428,8 +430,8 @@ body {
     width: 100%;
     height: 100%;
     background-image: url('../_imagens/teste.png');
-    background-repeat: repeat;
-
+    background-size: cover;
+    background-repeat: no-repeat;
     z-index: 0;
     display: none;
     animation: brilha-estrela-animation-tarde 5s infinite linear;
@@ -524,6 +526,10 @@ body {
         bottom: 180px;
     }
 
+    70% {
+        bottom: 130px;
+    }
+
     100% {
         bottom: 0;
     }
@@ -552,15 +558,15 @@ body {
 
 @keyframes brilha-estrela-animation {
     0% {
-        opacity: 0.2;
+        opacity: 0.1;
     }
 
     50% {
-        opacity: 0.8;
+        opacity: 0.5;
     }
 
     100% {
-        opacity: 0.2;
+        opacity: 0.1;
     }
 }
 

@@ -2,26 +2,30 @@
 const mario = document.querySelector(".mario");
 const pipe = document.querySelector(".pipe");
 const scoreElement = document.querySelector('.score');
-const livesElement = document.querySelector('.lives');
+const livesContainer = document.querySelector('#lives-container'); // Novo seletor
 const bullet = document.querySelector('.bullet');
 const gameOverScreen = document.querySelector('.game-over-screen');
 const jogarDenovoScreen = document.querySelector('.tela-jogar-denovo');
 const finalScoreElement = document.querySelector('#final-score');
 const gameBoard = document.querySelector('.game-board');
 const root = document.documentElement;
-const clouds = document.querySelector('.clouds')
+const clouds = document.querySelector('.clouds');
+const starLayer = document.querySelector('#star-layer');
+const infernoBackground = document.querySelector("#inferno-background");
+
+
 //Tela inicial
 const telaInicial = document.querySelector('.tela-Inicial');
 const nicknameInput = document.querySelector('#nickname');
 const startButton = document.querySelector('#start-button');
 
-// Áudios
+// Áudios e Imagens Padrão
 var musicaMario = new Audio('./_media/_sons/trilhasonoramario.mp3');
 const jumpSound = new Audio('./_media/_sons/jump.mp3');
 const selectSound = new Audio('./_media/_sons/undertale-select.mp3');
 const coinSound = new Audio('./_media/_sons/coin-audio.mp3');
-
 var localGameOver = './_imagens/morte/game-over-mario.png';
+
 // Variáveis de Estado do Jogo
 let pausa = false;
 let estaInvuneravel = false;
@@ -33,11 +37,20 @@ let loop;
 let scoreInterval;
 let personagemSelecionadoId = 'marioDiv';
 
-// Flags para controlar as mudanças de tema e dificuldade
+// Flags para controlar as mudanças de tema
 let tardeAtivada = false;
 let noiteAtivada = false;
 let infernoAtivado = false;
-let evangelion = false;
+
+function atualizarVidas() {
+    livesContainer.innerHTML = ''; // Limpa as vidas atuais
+    for (let i = 0; i < vida; i++) {
+        const lifeIcon = document.createElement('img');
+        lifeIcon.src = './_media/life.gif';
+        lifeIcon.classList.add('life-icon');
+        livesContainer.appendChild(lifeIcon);
+    }
+}
 
 const jump = () => {
     if (!mario.classList.contains('jump')) {
@@ -49,7 +62,7 @@ const jump = () => {
 
 function perdeVida() {
     vida--;
-    livesElement.textContent = `Vidas: ${vida}`;
+    atualizarVidas(); // mudar Vida na tela
 }
 
 function ativarInvunerabilidade() {
@@ -111,16 +124,26 @@ const checkSonic = checarCodigo(sonicCode, () => {
     mario.style.transform = 'scaleX(1)';
 });
 
+function criarBrasa() {
+    const ember = document.createElement('div');
+    ember.classList.add('ember');
+    ember.style.left = `${Math.random() * 100}%`; // Posição horizontal aleatória
+    // Atraso aleatório para que não subam todas juntas
+    ember.style.animationDelay = `${Math.random() * 3}s`;
+    gameBoard.appendChild(ember);
+}
+
 function startGame() {
     telaInicial.style.display = 'none';
     pipe.style.animationPlayState = 'running';
-    root.style.setProperty('--velocidade', `2.0s`); // Garante velocidade inicial
+    root.style.setProperty('--velocidade', `2.0s`);
+    atualizarVidas(); // Desenha as vidas iniciais
 
     scoreInterval = setInterval(() => {
         if (!pausa) score++;
         scoreElement.textContent = `Score: ${score}`;
 
-        // AUMENTO PROGRESSIVO DE VELOCIDADE
+        // AUMENTO PROGRESSIVO DE VELOCIDADE (A cada 1 pontos)
         if (score % 1 === 0 && score > 0 && !infernoAtivado && !pausa) {
             let velocidadeAtual = parseFloat(getComputedStyle(root).getPropertyValue('--velocidade'));
             console.log(velocidadeAtual)
@@ -130,15 +153,19 @@ function startGame() {
             }
         }
 
-        // MUDANÇAS DE TEMA POR PONTUAÇÃO
+        // MUDANÇAS DE TEMA
         if (score >= 500 && !tardeAtivada) {
-            gameBoard.className = 'game-board theme-tarde'; 0
+            gameBoard.className = 'game-board theme-tarde';
+            starLayer.style.display = 'block';
             musicaMario.pause();
             musicaMario = new Audio('./_media/_sons/HoraDeAventura.mp3');
             musicaMario.play();
             tardeAtivada = true;
         }
-        if (score >= 1000 && !noiteAtivada) {
+        if (score >= 10 && !noiteAtivada) {
+            starLayer.classList.replace("star-layer-tarde", "star-layer");
+            starLayer.style.display = 'block';
+            starLayer.style.animation = 'brilha-estrela-animation 5s infinite linear';
             gameBoard.className = 'game-board theme-noite';
             musicaMario.pause();
             musicaMario = new Audio('./_media/_sons/silkSong.mp3');
@@ -147,24 +174,28 @@ function startGame() {
         }
         if (score >= 1500 && !infernoAtivado) {
             gameBoard.className = 'game-board theme-infernal';
-            gameBoard.style.borderBottom = "15px solid rgb(247, 111, 0)"
             root.style.setProperty('--velocidade', '1.0s');
-            console.log("MODO INFERNAL ATIVADO! Velocidade: 1s");
-            clouds.src = ('./_media/minecraft-ghast.gif');
+            clouds.src = './_media/minecraft-ghast.gif';
             musicaMario.pause();
             musicaMario = new Audio('./_media/_sons/DoomEternal.mp3');
             musicaMario.play();
+            gameBoard.classList.add('tremer'); // Ativa o tremor
+            infernoBackground.style.display = 'block'; // Mostra o fundo de rochas
+            // document.querySelector('.onda-calor').style.display = 'block';
+
+
+            for (let i = 0; i < 50; i++) {
+                criarBrasa();
+            }
             infernoAtivado = true;
+
+
         }
 
-
-        // LÓGICA DE BULLET
-        if (score == 500) {
+        // LÓGICA DE BULLET (Corrigida)
+        if (score >= 500 && bullet.style.display !== 'block') {
+            bullet.style.display = 'block';
             bullet.style.animationPlayState = 'running';
-        } else if (score > 483) {
-            bullet.style.animationPlayState = 'paused';
-            bullet.style.display = 'none';
-            novaMoeda
         }
 
         // LÓGICA DE MOEDAS
@@ -196,14 +227,14 @@ function startGame() {
                 score += 10;
                 moedasColetadas++;
 
-                if (moedasColetadas % 25 === 0 && moedasColetadas > 0) {
+                // Ganha vida a cada 25 moedas
+                if (moedasColetadas % 10 === 0 && moedasColetadas > 0) {
                     vida++;
-                    livesElement.textContent = `Vidas: ${vida}`;
+                    atualizarVidas(); // Redesenha as vidas na tela
                 }
             }
         });
 
-        // Lógica de colisão com obstáculos
         const pipePosition = pipe.offsetLeft;
         const bulletPosition = bullet.offsetLeft;
 
@@ -213,7 +244,6 @@ function startGame() {
             pausa = true;
             pipe.style.animationPlayState = 'paused';
             bullet.style.animationPlayState = 'paused';
-
 
             if (vida > 0) {
                 jogarDenovoScreen.style.display = 'flex';

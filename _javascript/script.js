@@ -114,7 +114,6 @@ function perdeVida() {
 
     if (vida > 0) {
         mario.src = spriteMorteTemporario;
-        mario.style.animation = 'none';
     }
 }
 
@@ -238,7 +237,7 @@ function startGame() {
             musicaMario.play();
             tardeAtivada = true;
         }
-        if (score >= 1000 && !noiteAtivada) { // Corrigido de 10 para 1000
+        if (score >= 1000 && !noiteAtivada) {
             starLayer.style.animation = 'brilha-estrela-animation 5s infinite linear';
             gameBoard.className = 'game-board theme-noite';
             musicaMario.pause();
@@ -312,7 +311,7 @@ function startGame() {
             pausa = true;
             pipe.style.animationPlayState = 'paused';
             bullet.style.animationPlayState = 'paused';
-            
+
             if (vida > 0) {
                 perdeVida(); // Chama a função de perder vida
                 jogarDenovoScreen.style.display = 'flex';
@@ -429,6 +428,7 @@ function continuarReniciar(escolha) {
         pausa = false;
         ativarInvunerabilidade();
         escolhaPersonagem(personagemSelecionadoId.replace('Div', ''));
+
     } else if (escolha === 'Reniciar') {
         window.location.reload();
     }

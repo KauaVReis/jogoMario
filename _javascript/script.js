@@ -1,8 +1,14 @@
-// Elementos
+/* =========================================
+   SELEÇÃO DE ELEMENTOS DO JOGO (DOM)
+   =========================================
+   Aqui, guardamos em constantes as referências
+   aos elementos HTML que serão manipulados
+   durante o jogo, como o personagem, obstáculos e telas.
+*/
 const mario = document.querySelector(".mario");
 const pipe = document.querySelector(".pipe");
 const scoreElement = document.querySelector('.score');
-const livesContainer = document.querySelector('#lives-container'); // Novo seletor
+const livesContainer = document.querySelector('#lives-container');
 const bullet = document.querySelector('.bullet');
 const gameOverScreen = document.querySelector('.game-over-screen');
 const jogarDenovoScreen = document.querySelector('.tela-jogar-denovo');
@@ -12,21 +18,37 @@ const root = document.documentElement;
 const clouds = document.querySelector('.clouds');
 const starLayer = document.querySelector('#star-layer');
 const infernoBackground = document.querySelector("#inferno-background");
+const spriteMorteTemporario = './_media/napstablookMorte.gif';
+const startupScreen = document.querySelector('#startup-screen');
 
-
-//Tela inicial
+/* =========================================
+   ELEMENTOS DA TELA INICIAL
+   =========================================
+   Referências aos elementos da primeira tela
+   que o jogador vê, onde ele insere o nickname.
+*/
 const telaInicial = document.querySelector('.tela-Inicial');
 const nicknameInput = document.querySelector('#nickname');
 const startButton = document.querySelector('#start-button');
 
-// Áudios e Imagens Padrão
+/* =========================================
+   RECURSOS DE ÁUDIO E IMAGENS PADRÃO
+   =========================================
+   Pré-carregamento dos arquivos de áudio e
+   definição de imagens padrão para o jogo.
+*/
 var musicaMario = new Audio('./_media/_sons/trilhasonoramario.mp3');
 const jumpSound = new Audio('./_media/_sons/jump.mp3');
 const selectSound = new Audio('./_media/_sons/undertale-select.mp3');
 const coinSound = new Audio('./_media/_sons/coin-audio.mp3');
 var localGameOver = './_imagens/morte/game-over-mario.png';
 
-// Variáveis de Estado do Jogo
+/* =========================================
+   VARIÁVEIS DE ESTADO DO JOGO
+   =========================================
+   Variáveis que controlam o estado atual do
+   jogo, como pontuação, vidas, pausa, etc.
+*/
 let pausa = false;
 let estaInvuneravel = false;
 var vida = 3;
@@ -37,13 +59,31 @@ let loop;
 let scoreInterval;
 let personagemSelecionadoId = 'marioDiv';
 
-// Flags para controlar as mudanças de tema
+/* =========================================
+   FLAGS DE CONTROLE DE TEMA
+   =========================================
+   Variáveis booleanas para garantir que as
+   mudanças de tema (tarde, noite, inferno)
+   aconteçam apenas uma vez.
+*/
 let tardeAtivada = false;
 let noiteAtivada = false;
 let infernoAtivado = false;
 
+/* =========================================
+   FUNÇÕES PRINCIPAIS DE JOGABILIDADE
+   =========================================
+   Funções que controlam as ações básicas
+   do jogador e do jogo.
+*/
+
+/**
+ * Atualiza os ícones de vida na tela.
+ * Ela limpa o contêiner de vidas e o recria
+ * com o número atual de vidas do jogador.
+ */
 function atualizarVidas() {
-    livesContainer.innerHTML = ''; // Limpa as vidas atuais
+    livesContainer.innerHTML = '';
     for (let i = 0; i < vida; i++) {
         const lifeIcon = document.createElement('img');
         lifeIcon.src = './_media/life.gif';
@@ -52,6 +92,9 @@ function atualizarVidas() {
     }
 }
 
+/**
+ * Controla a ação de pulo do personagem.
+ */
 const jump = () => {
     if (!mario.classList.contains('jump')) {
         mario.classList.add('jump');
@@ -60,11 +103,25 @@ const jump = () => {
     }
 }
 
+/**
+ * Chamada quando o jogador colide com um obstáculo.
+ * Reduz uma vida, atualiza a tela e, se houver
+ * vidas restantes, mostra o sprite de morte temporária.
+ */
 function perdeVida() {
     vida--;
-    atualizarVidas(); // mudar Vida na tela
+    atualizarVidas();
+
+    if (vida > 0) {
+        mario.src = spriteMorteTemporario;
+        mario.style.animation = 'none';
+    }
 }
 
+/**
+ * Ativa um curto período de invulnerabilidade
+ * após o jogador perder uma vida e continuar.
+ */
 function ativarInvunerabilidade() {
     estaInvuneravel = true;
     mario.classList.add('invuneravel');
@@ -74,6 +131,9 @@ function ativarInvunerabilidade() {
     }, 500);
 }
 
+/**
+ * Envia a pontuação final para o servidor via PHP.
+ */
 function salvarPontuacao(nomeJogador, pontuacaoFinal) {
     const dados = { name: nomeJogador, score: pontuacaoFinal };
     fetch('./_php/salvar_pontuacao.php', {
@@ -86,7 +146,12 @@ function salvarPontuacao(nomeJogador, pontuacaoFinal) {
         .catch((error) => console.error('Ocorreu um erro na comunicação:', error));
 }
 
-// Códigos Secretos
+/* =========================================
+   SISTEMA DE CÓDIGOS SECRETOS (EASTER EGGS)
+   =========================================
+   Lógica para detectar sequências de teclas
+   e ativar efeitos especiais no jogo.
+*/
 const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 const robertoCode = ['r', 'o', 'b', 'e', 'r', 't', 'o'];
 const palmeirasCode = ['p', 'a', 'l', 'm', 'e', 'i', 'r', 'a', 's'];
@@ -124,29 +189,40 @@ const checkSonic = checarCodigo(sonicCode, () => {
     mario.style.transform = 'scaleX(1)';
 });
 
+/* =========================================
+   FUNÇÕES DE EFEITOS VISUAIS
+   =========================================
+   Funções que criam elementos dinâmicos para
+   melhorar a estética do jogo.
+*/
 function criarBrasa() {
     const ember = document.createElement('div');
     ember.classList.add('ember');
-    ember.style.left = `${Math.random() * 100}%`; // Posição horizontal aleatória
-    // Atraso aleatório para que não subam todas juntas
+    ember.style.left = `${Math.random() * 100}%`;
     ember.style.animationDelay = `${Math.random() * 3}s`;
     gameBoard.appendChild(ember);
 }
 
+/* =========================================
+   FUNÇÃO PRINCIPAL DO JOGO (STARTGAME)
+   =========================================
+   Esta é a função central que controla todo o
+   fluxo do jogo, iniciando os loops de
+   pontuação e de colisão.
+*/
 function startGame() {
     telaInicial.style.display = 'none';
     pipe.style.animationPlayState = 'running';
     root.style.setProperty('--velocidade', `2.0s`);
-    atualizarVidas(); // Desenha as vidas iniciais
+    atualizarVidas();
 
     scoreInterval = setInterval(() => {
         if (!pausa) score++;
         scoreElement.textContent = `Score: ${score}`;
 
-        // AUMENTO PROGRESSIVO DE VELOCIDADE (A cada 1 pontos)
+        // AUMENTO PROGRESSIVO DE VELOCIDADE
         if (score % 1 === 0 && score > 0 && !infernoAtivado && !pausa) {
             let velocidadeAtual = parseFloat(getComputedStyle(root).getPropertyValue('--velocidade'));
-            console.log(velocidadeAtual)
             if (velocidadeAtual > 1.5) {
                 let novaVelocidade = Math.max(1.5, velocidadeAtual - 0.001);
                 root.style.setProperty('--velocidade', `${novaVelocidade.toFixed(3)}s`);
@@ -162,9 +238,7 @@ function startGame() {
             musicaMario.play();
             tardeAtivada = true;
         }
-        if (score >= 10 && !noiteAtivada) {
-            starLayer.classList.replace("star-layer-tarde", "star-layer");
-            starLayer.style.display = 'block';
+        if (score >= 1000 && !noiteAtivada) { // Corrigido de 10 para 1000
             starLayer.style.animation = 'brilha-estrela-animation 5s infinite linear';
             gameBoard.className = 'game-board theme-noite';
             musicaMario.pause();
@@ -179,20 +253,15 @@ function startGame() {
             musicaMario.pause();
             musicaMario = new Audio('./_media/_sons/DoomEternal.mp3');
             musicaMario.play();
-            gameBoard.classList.add('tremer'); // Ativa o tremor
-            infernoBackground.style.display = 'block'; // Mostra o fundo de rochas
-            // document.querySelector('.onda-calor').style.display = 'block';
-
-
+            gameBoard.classList.add('tremer');
+            infernoBackground.style.display = 'block';
             for (let i = 0; i < 50; i++) {
                 criarBrasa();
             }
             infernoAtivado = true;
-
-
         }
 
-        // LÓGICA DE BULLET (Corrigida)
+        // LÓGICA DE BULLET
         if (score >= 500 && bullet.style.display !== 'block') {
             bullet.style.display = 'block';
             bullet.style.animationPlayState = 'running';
@@ -205,6 +274,7 @@ function startGame() {
         }
     }, 100);
 
+    // LOOP PRINCIPAL DE VERIFICAÇÃO DE COLISÃO
     loop = setInterval(() => {
         if (pausa || estaInvuneravel) return;
         musicaMario.play();
@@ -212,10 +282,10 @@ function startGame() {
         const marioPositionBottom = +window.getComputedStyle(mario).bottom.replace('px', '');
         const marioPositionLeft = mario.offsetLeft;
 
+        // VERIFICA COLISÃO COM MOEDAS
         document.querySelectorAll('.coin').forEach((moeda) => {
             const moedaPositionLeft = moeda.offsetLeft;
             const moedaPositionBottom = +window.getComputedStyle(moeda).bottom.replace('px', '');
-
             if (
                 marioPositionLeft < moedaPositionLeft + 40 &&
                 marioPositionLeft + 120 > moedaPositionLeft &&
@@ -226,11 +296,9 @@ function startGame() {
                 coinSound.play();
                 score += 10;
                 moedasColetadas++;
-
-                // Ganha vida a cada 25 moedas
                 if (moedasColetadas % 10 === 0 && moedasColetadas > 0) {
                     vida++;
-                    atualizarVidas(); // Redesenha as vidas na tela
+                    atualizarVidas();
                 }
             }
         });
@@ -238,14 +306,15 @@ function startGame() {
         const pipePosition = pipe.offsetLeft;
         const bulletPosition = bullet.offsetLeft;
 
+        // VERIFICA COLISÃO COM OBSTÁCULOS
         if ((pipePosition <= 120 && pipePosition > 0 && marioPositionBottom < 80) ||
             (bullet.style.display === 'block' && bulletPosition <= 120 && bulletPosition > 0 && marioPositionBottom < 80)) {
-            perdeVida();
             pausa = true;
             pipe.style.animationPlayState = 'paused';
             bullet.style.animationPlayState = 'paused';
-
+            
             if (vida > 0) {
+                perdeVida(); // Chama a função de perder vida
                 jogarDenovoScreen.style.display = 'flex';
             } else {
                 morrer(pipePosition, bulletPosition, marioPositionBottom);
@@ -254,6 +323,12 @@ function startGame() {
     }, 10);
 }
 
+/* =========================================
+   EVENT LISTENERS (OUVINTES DE EVENTOS)
+   =========================================
+   Código que "escuta" ações do usuário,
+   como pressionar teclas ou clicar em botões.
+*/
 document.addEventListener('keydown', (event) => {
     jump();
     checkKonami(event.key);
@@ -272,6 +347,13 @@ startButton.addEventListener('click', () => {
     }
 });
 
+/* =========================================
+   FUNÇÕES DE LÓGICA DE MENU E ESTADO
+   =========================================
+   Funções que gerenciam a seleção de
+   personagens, a tela de "continuar" e o
+   estado final de "Game Over".
+*/
 function escolhaPersonagem(personagem) {
     selectSound.currentTime = 0;
     selectSound.play();
@@ -286,19 +368,53 @@ function escolhaPersonagem(personagem) {
         personagemSelecionadoId = `${personagem}Div`;
     }
 
-    const caminhos = {
-        mario: './_media/mario.gif', sonic: './_media/sonic.gif', megaman: './_media/yd6sCid.gif',
-        link: './_media/link.gif', goku: './_media/goku.gif', jotaro: './_media/jotaroA.gif',
-        hollow: './_media/hollow.gif', hornet: './_media/hornet.gif'
-    };
+    let marioGifPath = './_media/mario.gif';
+    let gameOverImagePath = `./_imagens/morte/game-over-mario.png`;
+    let mudarDirecao = false;
 
-    if (personagem == "jotaro") {
-        localGameOver = `./_imagens/morte/game-over-${personagem}.gif`;
-    } else {
-        localGameOver = `./_imagens/morte/game-over-${personagem}.png`;
+    switch (personagem) {
+        case 'mario':
+            marioGifPath = './_media/mario.gif';
+            gameOverImagePath = `./_imagens/morte/game-over-mario.png`;
+            break;
+        case 'sonic':
+            marioGifPath = './_media/sonic.gif';
+            gameOverImagePath = `./_imagens/morte/game-over-sonic.png`;
+            break;
+        case 'megaman':
+            marioGifPath = './_media/yd6sCid.gif';
+            gameOverImagePath = `./_imagens/morte/game-over-megaman.png`;
+            break;
+        case 'link':
+            marioGifPath = './_media/link.gif';
+            gameOverImagePath = `./_imagens/morte/game-over-link.png`;
+            break;
+        case 'goku':
+            marioGifPath = './_media/goku.gif';
+            gameOverImagePath = `./_imagens/morte/game-over-goku.png`;
+            break;
+        case 'jotaro':
+            marioGifPath = './_media/jotaroA.gif';
+            gameOverImagePath = `./_imagens/morte/game-over-jotaro.gif`;
+            break;
+        case 'hollow':
+            marioGifPath = './_media/hollow.gif';
+            gameOverImagePath = `./_imagens/morte/game-over-hollow.png`;
+            mudarDirecao = true;
+            break;
+        case 'hornet':
+            marioGifPath = './_media/hornet.gif';
+            gameOverImagePath = `./_imagens/morte/game-over-hornet.png`;
+            mudarDirecao = true;
+            break;
+        default:
+            console.warn(`Personagem '${personagem}' não reconhecido. Usando Mario padrão.`);
+            break;
     }
-    mario.src = caminhos[personagem] || caminhos.mario;
-    mario.style.transform = (personagem === 'hollow' || personagem === 'hornet') ? 'scaleX(-1)' : 'scaleX(1)';
+
+    mario.src = marioGifPath;
+    localGameOver = gameOverImagePath;
+    mario.style.transform = mudarDirecao ? 'scaleX(-1)' : 'scaleX(1)';
 }
 
 function continuarReniciar(escolha) {
@@ -312,6 +428,7 @@ function continuarReniciar(escolha) {
         bullet.style.animationPlayState = 'running';
         pausa = false;
         ativarInvunerabilidade();
+        escolhaPersonagem(personagemSelecionadoId.replace('Div', ''));
     } else if (escolha === 'Reniciar') {
         window.location.reload();
     }
@@ -349,9 +466,28 @@ function criarMoeda(bottom) {
     }, 4000);
 }
 
+/* =========================================
+   INICIALIZAÇÃO DA PÁGINA
+   =========================================
+   Código que executa assim que a página é
+   carregada, como a tela de startup.
+*/
 document.addEventListener('DOMContentLoaded', () => {
     const marioDiv = document.getElementById('marioDiv');
     if (marioDiv) {
         marioDiv.classList.add('selecionado');
     }
+
+    // LÓGICA DA TELA DE STARTUP COM IMAGEM
+    telaInicial.style.display = 'none';
+    const startupDisplayTime = 1500; // 3 segundos
+
+    function finishStartup() {
+        startupScreen.classList.add('fade-out');
+        setTimeout(() => {
+            startupScreen.remove();
+            telaInicial.style.display = 'flex';
+        }, 1000);
+    }
+    setTimeout(finishStartup, startupDisplayTime);
 });

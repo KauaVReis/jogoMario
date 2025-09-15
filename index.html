@@ -9,9 +9,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="_imagens/passione.png">
 </head>
 
 <body>
+
+    <div id="passioneScreen">
+        <img id="startup-image" src="./_imagens/passione.png" alt="Tela de Abertura">
+    </div>
     <div class="game-board">
         <div class="tela-Inicial">
             <img src="_imagens/logoSenai.png" alt="" width="350px">
@@ -66,14 +71,17 @@
             </div>
         </div>
 
+        <div id="inferno-background"></div>
+        <!-- <div class="onda-calor"></div> -->
         <img src="./_imagens/pipe.png" class="pipe">
         <img src="./_imagens/bullet.png" width="100px" class="bullet">
         <img src="./_media/mario.gif" class="mario">
         <img src="./_imagens/clouds.png" class="clouds">
+        <div id="star-layer"></div>
 
         <div class="score-container">
             <div class="score">Score: 0</div>
-            <div class="lives">Vidas: 3</div>
+            <div id="lives-container"></div>
         </div>
 
         <div class="game-over-screen" style="display: none;">

@@ -261,10 +261,10 @@ function startGame() {
         }
 
         // LÓGICA DE BULLET
-        if (score >= 500 && bullet.style.display !== 'block') {
-            bullet.style.display = 'block';
-            bullet.style.animationPlayState = 'running';
-        }
+        // if (score >= 500 && bullet.style.display !== 'block') {
+        //     bullet.style.display = 'block';
+        //     bullet.style.animationPlayState = 'running';
+        // }
 
         // LÓGICA DE MOEDAS
         if (score > 0 && score % 50 == 0) {

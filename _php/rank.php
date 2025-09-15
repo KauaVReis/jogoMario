@@ -4,7 +4,7 @@ require 'conectar.php';
 
 $ranking_data = [];
 
-$sql = "SELECT name, score FROM ranks ORDER BY score DESC LIMIT 10";
+$sql = "SELECT name, score FROM rank ORDER BY score DESC LIMIT 10";
 
 $result = mysqli_query($conn, $sql);
 

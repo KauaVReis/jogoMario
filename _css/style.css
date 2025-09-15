@@ -555,7 +555,7 @@ body {
    Estiliza a tela de abertura do site
    que mostra uma imagem e desaparece.
 */
-#startup-screen {
+#passioneScreen {
     position: fixed;
     /* Fixo na viewport */
     top: 0;
@@ -575,7 +575,7 @@ body {
     /* Transição suave para o fade out */
 }
 
-#startup-screen.fade-out {
+#passioneScreen.fade-out {
     opacity: 0;
     /* Torna invisível */
     pointer-events: none;

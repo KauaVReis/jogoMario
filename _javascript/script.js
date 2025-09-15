@@ -19,7 +19,7 @@ const clouds = document.querySelector('.clouds');
 const starLayer = document.querySelector('#star-layer');
 const infernoBackground = document.querySelector("#inferno-background");
 const spriteMorteTemporario = './_media/napstablookMorte.gif';
-const startupScreen = document.querySelector('#startup-screen');
+const passioneScreen = document.querySelector('#passioneScreen');
 
 /* =========================================
    ELEMENTOS DA TELA INICIAL
@@ -112,7 +112,7 @@ function perdeVida() {
     vida--;
     atualizarVidas();
 
-    if (vida > 0) {
+    if (vida >= 0) {
         mario.src = spriteMorteTemporario;
     }
 }
@@ -483,9 +483,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const startupDisplayTime = 1500; // 3 segundos
 
     function finishStartup() {
-        startupScreen.classList.add('fade-out');
+        passioneScreen.classList.add('fade-out');
         setTimeout(() => {
-            startupScreen.remove();
+            passioneScreen.remove();
             telaInicial.style.display = 'flex';
         }, 1000);
     }
